@@ -1,0 +1,21 @@
+{
+  "name": "my/telegram-api",
+  "description": "My TelegramApi",
+  "autoload": {
+    "psr-4": {
+      "My\\Telegram\\": "src/"
+    }
+  },
+  "require": {
+    "php": "^8.0",
+    "telegram-bot/api": "^2.3",
+    "illuminate/support": "^10.9"
+  },
+  "extra": {
+    "laravel": {
+      "providers": [
+      ]
+    }
+  },
+  "prefer-stable": true
+}
