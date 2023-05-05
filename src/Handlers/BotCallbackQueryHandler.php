@@ -11,12 +11,12 @@ abstract class BotCallbackQueryHandler extends BaseBotHandler
 
     public function replyMessage(
         string $text,
-               $parseMode = null,
-               $disablePreview = false,
-               $messageThreadId = null,
-               $replyToMessageId = null,
-               $replyMarkup = null,
-               $disableNotification = false
+        $parseMode = null,
+        $disablePreview = false,
+        $messageThreadId = null,
+        $replyToMessageId = null,
+        $replyMarkup = null,
+        $disableNotification = false
     ): Message {
         return $this->bot->sendMessage(
             chatId: $this->update->getCallbackQuery()->getFrom()->getId(),

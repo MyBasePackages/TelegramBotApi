@@ -2,12 +2,12 @@
 
 namespace My\Telegram;
 
+use Exception;
+use Illuminate\Support\Str;
 use My\Telegram\Handlers\BotCallbackQueryHandler;
 use My\Telegram\Handlers\BotCommandHandler;
 use My\Telegram\Handlers\BotInlineQueryHandler;
 use My\Telegram\Handlers\BotMessageHandler;
-use Exception;
-use Illuminate\Support\Str;
 use TelegramBot\Api\BotApi;
 use TelegramBot\Api\Types\Update;
 use Throwable;
@@ -45,16 +45,37 @@ class WebhookClient
         $this->messages[] = $messageHandler;
     }
 
+    public function onMessages(array $handlers): void
+    {
+        foreach ($handlers as $messageHandler) {
+            $this->onMessage($messageHandler);
+        }
+    }
+
     public function onCommand(string $command, BotCommandHandler $commandHandler): void
     {
         $commandHandler->bot = $this->bot;
         $this->commands[trim($command)] = $commandHandler;
     }
 
-    public function onText(string $text, BotMessageHandler $messageHandler): void
+    public function onCommands(array $handlers): void
+    {
+        foreach ($handlers as $command => $handler) {
+            $this->onCommand($command, $handler);
+        }
+    }
+
+    public function onMessageByText(string $text, BotMessageHandler $messageHandler): void
     {
         $messageHandler->bot = $this->bot;
         $this->texts[md5($text)] = $messageHandler;
+    }
+
+    public function onMessagesByText(array $handlers): void
+    {
+        foreach ($handlers as $text => $handler) {
+            $this->onMessageByText($text, $handler);
+        }
     }
 
     public function onCallbackQuery(BotCallbackQueryHandler $callbackQueryHandler): void
@@ -63,10 +84,24 @@ class WebhookClient
         $this->callbackQueries[] = $callbackQueryHandler;
     }
 
-    public function onCallbackQueryData(string $data, BotCallbackQueryHandler $callbackQueryHandler): void
+    public function onCallbackQueries(array $handlers): void
+    {
+        foreach ($handlers as $handler) {
+            $this->onCallbackQuery($handler);
+        }
+    }
+
+    public function onCallbackQueryByData(string $data, BotCallbackQueryHandler $callbackQueryHandler): void
     {
         $callbackQueryHandler->bot = $this->bot;
         $this->callbackQueryData[trim($data)] = $callbackQueryHandler;
+    }
+
+    public function onCallbackQueriesByData(array $handlers): void
+    {
+        foreach ($handlers as $data => $handler) {
+            $this->onCallbackQueryByData($data, $handler);
+        }
     }
 
     public function onInlineQuery(BotInlineQueryHandler $inlineQueryHandler): void
@@ -75,10 +110,24 @@ class WebhookClient
         $this->callbackQueries[] = $inlineQueryHandler;
     }
 
-    public function onInlineQueryQuery(string $query, BotInlineQueryHandler $inlineQueryHandler): void
+    public function onInlineQueries(array $handlers): void
+    {
+        foreach ($handlers as $handler) {
+            $this->onInlineQuery($handler);
+        }
+    }
+
+    public function onInlineQueryByQuery(string $query, BotInlineQueryHandler $inlineQueryHandler): void
     {
         $inlineQueryHandler->bot = $this->bot;
         $this->inlineQueriesQuery[trim($query)] = $inlineQueryHandler;
+    }
+
+    public function onInlineQueriesByQuery(array $handlers): void
+    {
+        foreach ($handlers as $query => $handler) {
+            $this->onInlineQueryByQuery($query, $handler);
+        }
     }
 
     /**
